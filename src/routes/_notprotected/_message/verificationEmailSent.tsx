@@ -27,7 +27,7 @@ function RouteComponent() {
         <p className="text-xs text-muted-foreground pt-2">
           Didn't receive the email? Check your spam folder or
           <br />
-          <Link to="/register" className="text-primary text-sm hover:underline">
+          <Link to="/resendVerificationToken" className="text-primary text-sm hover:underline">
             resend verification link
           </Link>
         </p>
