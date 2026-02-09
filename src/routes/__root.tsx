@@ -6,11 +6,29 @@ import type { AuthState } from "@/types";
 import type { QueryClient } from "@tanstack/react-query";
 import Header from "@/components/shared/Header";
 import { DotBackground } from "@/components/ui/DotBackground";
+import ErrorPage from "@/components/shared/ErrorPage";
+import NotFoundPage from "@/components/shared/NotFoundPage";
 
 // Extend AuthState to include queryClient
 interface RouterContext extends AuthState {
   queryClient: QueryClient;
 }
+
+// Shared shell for error/notFound pages so they get theming and toasts
+const RootShell = ({ children }: { children: React.ReactNode }) => {
+  const { queryClient } = Route.useRouteContext();
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider attribute="class">
+        <div className="min-h-screen flex flex-col">
+          <Header />
+          <DotBackground className="flex-1">{children}</DotBackground>
+          <Toaster />
+        </div>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+};
 
 const RootLayout = () => {
   const { queryClient } = Route.useRouteContext();
@@ -40,4 +58,14 @@ const RootLayout = () => {
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   component: RootLayout,
+  errorComponent: ({ error, reset }) => (
+    <RootShell>
+      <ErrorPage error={error} reset={reset} />
+    </RootShell>
+  ),
+  notFoundComponent: () => (
+    <RootShell>
+      <NotFoundPage />
+    </RootShell>
+  ),
 });
