@@ -59,6 +59,10 @@ export function LoginForm() {
                   <Link to="/register" className="cursor-pointer text-primary hover:underline">
                     Sign up
                   </Link>
+                  <br />
+                  <Link to="/resendVerificationToken" className="cursor-pointer text-primary hover:underline">
+                    Resend verification email
+                  </Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>
