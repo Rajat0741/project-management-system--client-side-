@@ -16,7 +16,7 @@ function RouteComponent() {
   useColdStartToast();
 
   return (
-    <div className="flex w-11/12 h-full items-center justify-center min-h-screen">
+    <div className="flex w-full h-full items-center justify-center min-h-screen">
       <Outlet />
     </div>
   );

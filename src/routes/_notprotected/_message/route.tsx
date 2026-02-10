@@ -5,5 +5,9 @@ export const Route = createFileRoute("/_notprotected/_message")({
 });
 
 function RouteComponent() {
-  return <Outlet />;
+  return (
+    <div className="max-w-11/12" >
+      <Outlet />
+    </div> 
+  );
 }
