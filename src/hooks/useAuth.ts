@@ -5,7 +5,7 @@ import apiClient from "@/lib/axiosApi";
 import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
 import { useUserStore } from "@/store/userData";
-import { queryClient } from "@/router";
+import { queryClient, router } from "@/router";
 
 /*
 response.data = {
@@ -26,9 +26,11 @@ export const useLogin = () => {
       const response: SuccessResponse<User> = await apiClient.post("/auth/login", data);
       return response.data.data;
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       setUserData(data);
       toast.success("Logged in successfully!");
+      // Force router to re-read context before navigating to prevent stale isAuthenticated value
+      await router.invalidate();
       navigate({ to: "/dashboard" });
     },
   });

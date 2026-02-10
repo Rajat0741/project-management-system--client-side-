@@ -2,6 +2,7 @@ import { createRouter } from '@tanstack/react-router'
 import { QueryClient, QueryCache, MutationCache } from '@tanstack/react-query'
 import { routeTree } from './routeTree.gen'
 import { axiosErrorHandler } from '@/utils/axiosApiHandler'
+import { isAxiosError } from 'axios'
 
 // Create QueryClient with global error handling
 export const queryClient = new QueryClient({
@@ -14,7 +15,13 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
-      retry: 2,
+      retry: (failureCount, error) => {
+        // Don't retry auth failures - let the interceptor handle them
+        if (isAxiosError(error) && [401, 403].includes(error.response?.status ?? 0)) {
+          return false;
+        }
+        return failureCount < 2;
+      },
       staleTime: 1000 * 60 * 5, // 5 minutes
     },
   },

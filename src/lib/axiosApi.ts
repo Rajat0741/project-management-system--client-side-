@@ -1,8 +1,13 @@
 import type { ErrorResponse } from "@/types";
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, type InternalAxiosRequestConfig } from "axios";
 import { toast } from "sonner";
 import { router } from "@/router";
 import { useUserStore } from "@/store/userData";
+
+// Extend Axios config to include retry flag
+interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -17,10 +22,10 @@ const clearUserData = useUserStore.getState().clearUserData;
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError<ErrorResponse>) => {
-    const originalRequest = error.config;
+    const originalRequest = error.config as ExtendedAxiosRequestConfig;
 
-    if (error.response?.status === 401 && originalRequest && !(originalRequest as any)._retry) {
-      (originalRequest as any)._retry = true;
+    if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
+      originalRequest._retry = true;
 
       try {
         await apiClient.post("/auth/refresh-token");

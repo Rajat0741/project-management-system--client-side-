@@ -6,9 +6,9 @@ import { toast } from "sonner";
 
 export const axiosErrorHandler = (error: unknown) => {
   if (isAxiosError(error)) {
-    // Do not show toast for 401 errors from the refresh-token endpoint.
-    // The axios interceptor already handles this by showing "Session expired" and redirecting.
-    if (error.response?.status === 401 && error.config?.url?.includes("/auth/refresh-token")) {
+    // Do not show toast for any errors from the refresh-token endpoint.
+    // The axios interceptor already handles all refresh failures (showing "Session expired" and redirecting).
+    if (error.config?.url?.includes("/auth/refresh-token")) {
       return;
     }
     const serverError = error.response?.data as ErrorResponse | undefined;
